@@ -1,0 +1,1749 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+public/
+  ncs-logo.png
+src/
+  components/
+    ui/
+      ArcadeButton.jsx
+      ArcadeInput.jsx
+      GlitchText.jsx
+      index.js
+      PixelBorder.jsx
+      Scanline.jsx
+      Toast.jsx
+    Navbar.jsx
+  constants/
+    index.js
+  hooks/
+    useToken.js
+  pages/
+    AboutPage.jsx
+    AuthPage.jsx
+    CluesPage.jsx
+    HomePage.jsx
+    LeaderboardPage.jsx
+  App.jsx
+  index.css
+  main.jsx
+.gitignore
+eslint.config.js
+index.html
+package.json
+vercel.json
+vite.config.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/components/ui/ArcadeButton.jsx">
+import { useState } from 'react'
+import { COLORS } from '../../constants'
+
+const VARIANTS = {
+  primary:   { bg: COLORS.accent, text: '#000',  hover: COLORS.accentDim },
+  secondary: { bg: 'transparent', text: COLORS.accent, hover: '#ffffff11' },
+  danger:    { bg: COLORS.red,    text: '#fff',  hover: '#cc2222' },
+  success:   { bg: COLORS.green,  text: '#000',  hover: '#2acc10' },
+}
+
+export default function ArcadeButton({
+  children,
+  onClick,
+  loading = false,
+  variant = 'primary',
+  fullWidth = false,
+  small = false,
+}) {
+  const [hovered, setHovered] = useState(false)
+  const c = VARIANTS[variant]
+
+  return (
+    <button
+      onClick={onClick}
+      disabled={loading}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+        width: fullWidth ? '100%' : undefined,
+        background: loading ? COLORS.muted : hovered ? c.hover : c.bg,
+        color: c.text,
+        border: variant === 'secondary' ? `1px solid ${COLORS.accent}` : 'none',
+        fontFamily: "'Press Start 2P', monospace",
+        fontSize: small ? 8 : 10,
+        padding: small ? '8px 14px' : '14px 24px',
+        cursor: loading ? 'not-allowed' : 'pointer',
+        letterSpacing: 1,
+        transition: 'all 0.12s',
+        transform: hovered && !loading ? 'translateY(-1px)' : 'none',
+      }}
+    >
+      {loading ? '...' : children}
+    </button>
+  )
+}
+</file>
+
+<file path="src/components/ui/ArcadeInput.jsx">
+import { useState } from 'react'
+import { COLORS } from '../../constants'
+
+export default function ArcadeInput({
+  label,
+  type = 'text',
+  value,
+  onChange,
+  placeholder,
+}) {
+  const [focused, setFocused] = useState(false)
+
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <label
+        style={{
+          display: 'block',
+          fontFamily: "'Press Start 2P', monospace",
+          fontSize: 9,
+          color: COLORS.accentDim,
+          marginBottom: 8,
+          letterSpacing: 1,
+        }}
+      >
+        {label}
+      </label>
+      <div style={{ position: 'relative' }}>
+        <span
+          style={{
+            position: 'absolute',
+            left: 12,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            color: focused ? COLORS.accent : COLORS.muted,
+            fontFamily: 'monospace',
+            fontSize: 14,
+            pointerEvents: 'none',
+          }}
+        >
+          {'>'}
+        </span>
+        <input
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          style={{
+            width: '100%',
+            boxSizing: 'border-box',
+            background: focused ? '#16161f' : COLORS.panel,
+            border: `1px solid ${focused ? COLORS.accent : COLORS.border}`,
+            color: COLORS.text,
+            fontFamily: 'monospace',
+            fontSize: 14,
+            padding: '12px 12px 12px 30px',
+            outline: 'none',
+            transition: 'all 0.15s',
+            boxShadow: focused ? `0 0 12px ${COLORS.accent}33` : 'none',
+          }}
+        />
+      </div>
+    </div>
+  )
+}
+</file>
+
+<file path="src/components/ui/GlitchText.jsx">
+import { COLORS } from '../../constants'
+
+export default function GlitchText({ text, size = 32, color = COLORS.accent }) {
+  return (
+    <span
+      style={{
+        fontFamily: "'Press Start 2P', monospace",
+        fontSize: size,
+        color,
+        textShadow: `2px 0 ${COLORS.cyan}, -2px 0 ${COLORS.red}`,
+        letterSpacing: 2,
+        display: 'inline-block',
+      }}
+    >
+      {text}
+    </span>
+  )
+}
+</file>
+
+<file path="src/components/ui/index.js">
+export { default as Scanline }     from './Scanline'
+export { default as PixelBorder }  from './PixelBorder'
+export { default as GlitchText }   from './GlitchText'
+export { default as ArcadeInput }  from './ArcadeInput'
+export { default as ArcadeButton } from './ArcadeButton'
+export { default as Toast }        from './Toast'
+</file>
+
+<file path="src/components/ui/PixelBorder.jsx">
+import { COLORS } from '../../constants'
+
+
+export default function PixelBorder({ children, style = {}, color = COLORS.accent }) {
+  const corners = [
+    { top: -4, left: -4 },
+    { bottom: -4, left: -4 },
+    { top: -4, right: -4 },
+    { bottom: -4, right: -4 },
+  ]
+
+  return (
+    <div
+      style={{
+        position: 'relative',
+        border: `2px solid ${color}`,
+        boxShadow: `0 0 0 1px ${color}33, inset 0 0 0 1px ${color}22, 0 0 20px ${color}22`,
+        ...style,
+      }}
+    >
+      {corners.map((pos, i) => (
+        <span
+          key={i}
+          style={{
+            position: 'absolute',
+            width: 6,
+            height: 6,
+            background: color,
+            display: 'block',
+            ...pos,
+          }}
+        />
+      ))}
+      {children}
+    </div>
+  )
+}
+</file>
+
+<file path="src/components/ui/Scanline.jsx">
+import { useEffect, useRef } from 'react'
+
+const PARTICLE_COUNT = 150
+
+function randomBetween(a, b) {
+  return a + Math.random() * (b - a)
+}
+
+function createParticle(width, height) {
+  return {
+    x:        Math.random() * width,
+    y:        Math.random() * height,
+    size:     randomBetween(1, 3.5),
+    speedX:   randomBetween(-0.4, 0.4),
+    speedY:   randomBetween(-0.6, -0.15),
+    opacity:  randomBetween(0.3, 1),
+    fade:     randomBetween(0.003, 0.008),
+    twinkle:  Math.random() > 0.5,
+    twinkleSpeed: randomBetween(0.02, 0.06),
+    twinklePhase: Math.random() * Math.PI * 2,
+  }
+}
+
+export default function AnimatedBackground() {
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+
+    let width  = window.innerWidth
+    let height = window.innerHeight
+    canvas.width  = width
+    canvas.height = height
+
+    // ── particles ──────────────────────────────────────────
+    let particles = Array.from({ length: PARTICLE_COUNT }, () =>
+      createParticle(width, height)
+    )
+
+    // ── infinity path helper ────────────────────────────────
+    // Lemniscate of Bernoulli: parametric form
+    // x = a·cos(t) / (1 + sin²(t))
+    // y = a·sin(t)·cos(t) / (1 + sin²(t))
+    function infinityPoint(t, cx, cy, a) {
+      const denom = 1 + Math.sin(t) * Math.sin(t)
+      return {
+        x: cx + (a * Math.cos(t)) / denom,
+        y: cy + (a * Math.sin(t) * Math.cos(t)) / denom,
+      }
+    }
+
+    let infT    = 0          // travelling dot position
+    let glowPulse = 0        // glow breathe
+    let raf
+
+    const resize = () => {
+      width  = window.innerWidth
+      height = window.innerHeight
+      canvas.width  = width
+      canvas.height = height
+    }
+    window.addEventListener('resize', resize)
+
+    // ── render loop ─────────────────────────────────────────
+    function draw() {
+      ctx.clearRect(0, 0, width, height)
+
+      const cx = width  / 2
+      const cy = height / 2
+      const a  = Math.min(width, height) * 0.80   // size of symbol
+
+      glowPulse += 0.018
+      const pulseAlpha = 0.18 + 0.07 * Math.sin(glowPulse)
+
+      // ── draw infinity symbol ─────────────────────────────
+      // outer soft glow
+      ctx.save()
+      ctx.shadowBlur = 0
+      const STEPS = 300
+      for (let pass = 0; pass < 3; pass++) {
+        const blurSizes  = [32, 14, 4]
+        const alphas     = [pulseAlpha * 0.5, pulseAlpha * 0.8, pulseAlpha * 1.4]
+        const lineWidths = [18, 8, 2.5]
+
+        ctx.beginPath()
+        for (let i = 0; i <= STEPS; i++) {
+          const t = (i / STEPS) * Math.PI * 2
+          const p = infinityPoint(t, cx, cy, a)
+          i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)
+        }
+        ctx.closePath()
+        ctx.strokeStyle = `rgba(245, 197, 24, ${alphas[pass]})`
+        ctx.lineWidth   = lineWidths[pass]
+        ctx.shadowColor = '#f5c518'
+        ctx.shadowBlur  = blurSizes[pass]
+        ctx.stroke()
+      }
+      ctx.restore()
+
+      // ── travelling dot along the symbol ─────────────────
+      infT += 0.012
+      const dot = infinityPoint(infT, cx, cy, a)
+
+      // dot trail
+      for (let i = 8; i >= 0; i--) {
+        const trailT = infT - i * 0.022
+        const tp     = infinityPoint(trailT, cx, cy, a)
+        const trailAlpha = (1 - i / 9) * 0.6
+        ctx.beginPath()
+        ctx.arc(tp.x, tp.y, 3 + i * 0.4, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(245, 197, 24, ${trailAlpha})`
+        ctx.fill()
+      }
+
+      // dot itself
+      ctx.save()
+      ctx.shadowColor = '#f5c518'
+      ctx.shadowBlur  = 20
+      ctx.beginPath()
+      ctx.arc(dot.x, dot.y, 5, 0, Math.PI * 2)
+      ctx.fillStyle = '#ffffff'
+      ctx.fill()
+      ctx.restore()
+
+      // ── sparkle particles ────────────────────────────────
+      particles.forEach((p, idx) => {
+        // twinkle
+        const twinkleVal = p.twinkle
+          ? 0.5 + 0.5 * Math.sin(glowPulse * (p.twinkleSpeed / 0.018) + p.twinklePhase)
+          : 1
+
+        const alpha = p.opacity * twinkleVal
+
+        // draw sparkle as 4-point star
+        ctx.save()
+        ctx.translate(p.x, p.y)
+        ctx.globalAlpha = Math.max(0, alpha)
+
+        const r1 = p.size
+        const r2 = p.size * 0.35
+
+        // colour: mix between gold, cyan, white
+        const palette = ['#f5c518', '#00e5ff', '#ffffff', '#f5c518', '#ffffff']
+        ctx.fillStyle = palette[idx % palette.length]
+        ctx.shadowColor = ctx.fillStyle
+        ctx.shadowBlur  = 6
+
+        ctx.beginPath()
+        for (let i = 0; i < 8; i++) {
+          const angle = (i * Math.PI) / 4
+          const r     = i % 2 === 0 ? r1 : r2
+          const sx    = Math.cos(angle) * r
+          const sy    = Math.sin(angle) * r
+          i === 0 ? ctx.moveTo(sx, sy) : ctx.lineTo(sx, sy)
+        }
+        ctx.closePath()
+        ctx.fill()
+        ctx.restore()
+
+        // move
+        p.x += p.speedX
+        p.y += p.speedY
+        p.opacity -= p.fade
+
+        // reset when faded out or off screen
+        if (p.opacity <= 0 || p.y < -10 || p.x < -10 || p.x > width + 10) {
+          particles[idx] = createParticle(width, height)
+        }
+      })
+
+      // ── scanline overlay ─────────────────────────────────
+      ctx.fillStyle = 'rgba(0,0,0,0)'
+      for (let y = 0; y < height; y += 4) {
+        ctx.fillRect(0, y, width, 1)
+      }
+
+      raf = requestAnimationFrame(draw)
+    }
+
+    draw()
+
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        pointerEvents: 'none',
+        zIndex: 0,
+        opacity: 1,
+      }}
+    />
+  )
+}
+</file>
+
+<file path="src/components/ui/Toast.jsx">
+import { useEffect } from 'react'
+import { COLORS } from '../../constants'
+
+export default function Toast({ message, type, onDone }) {
+  useEffect(() => {
+    const t = setTimeout(onDone, 3000)
+    return () => clearTimeout(t)
+  }, [message, onDone])
+
+  if (!message) return null
+
+  const isError = type === 'error'
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        bottom: 24,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: isError ? '#2a0a0a' : '#0a1a0a',
+        border: `1px solid ${isError ? COLORS.red : COLORS.green}`,
+        color: isError ? COLORS.red : COLORS.green,
+        fontFamily: "'Press Start 2P', monospace",
+        fontSize: 9,
+        padding: '12px 24px',
+        zIndex: 10000,
+        letterSpacing: 1,
+        boxShadow: `0 0 20px ${isError ? COLORS.red : COLORS.green}44`,
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {isError ? '✕ ' : '✓ '}
+      {message}
+    </div>
+  )
+}
+</file>
+
+<file path="src/components/Navbar.jsx">
+// TEST
+import { COLORS } from "../constants";
+import { ArcadeButton } from "./ui";
+
+const NAV_ITEMS = [
+  { id: "home", label: "HOME", icon: "🏠" },
+  { id: "clues", label: "CASE FILES", icon: "📁" },
+  { id: "leaderboard", label: "BOARD", icon: "🏆" },
+  { id: "about", label: "ABOUT", icon: "ℹ️" },
+];
+
+export default function Navbar({ page, setPage, user, logout }) {
+  return (
+    <nav
+      style={{
+        background: "#08080f",
+        borderBottom: `2px solid ${COLORS.accent}`,
+        padding: "0 24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        height: 56,
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
+        boxShadow: `0 2px 20px ${COLORS.accent}22`,
+      }}
+    >
+      {/* Logo */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 18 }}>🔍</span>
+        <span
+          style={{
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: 10,
+            color: COLORS.accent,
+            letterSpacing: 1,
+          }}
+        >
+          SHERLOCKED
+        </span>
+      </div>
+
+      {/* Nav links */}
+      <div style={{ display: "flex", gap: 4 }}>
+        {NAV_ITEMS.map((n) => (
+          <button
+            key={n.id}
+            onClick={() => setPage(n.id)}
+            style={{
+              background: page === n.id ? `${COLORS.accent}22` : "transparent",
+              color: page === n.id ? COLORS.accent : COLORS.muted,
+              border:
+                page === n.id
+                  ? `1px solid ${COLORS.accent}44`
+                  : "1px solid transparent",
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: 7,
+              padding: "8px 12px",
+              cursor: "pointer",
+              letterSpacing: 1,
+              transition: "all 0.12s",
+            }}
+          >
+            {n.icon} {n.label}
+          </button>
+        ))}
+      </div>
+
+      {/* User + logout */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <span
+          style={{
+            fontFamily: "monospace",
+            fontSize: 11,
+            color: COLORS.textDim,
+          }}
+        >
+          {/* {user?.email?.split("@")[0]} */}
+          {user?.zealId}{" "}
+        </span>
+
+        {/* NCS Logo — just left of EXIT */}
+        <img
+          src="/ncs-logo.png"
+          alt="NCS Logo"
+          style={{
+            height: 32,
+            width: "auto",
+            objectFit: "contain",
+            // filter: 'brightness(0) invert(1)',  // makes it white to match dark theme
+            opacity: 0.85,
+          }}
+        />
+
+        <ArcadeButton onClick={logout} variant="secondary" small>
+          EXIT
+        </ArcadeButton>
+      </div>
+    </nav>
+  );
+}
+</file>
+
+<file path="src/constants/index.js">
+export const API = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+
+export const COLORS = {
+  bg: "#0a0a0f",
+  panel: "#111118",
+  border: "#2a2a3e",
+  accent: "#f5c518",
+  accentDim: "#b8930f",
+  green: "#39ff14",
+  red: "#ff3b3b",
+  cyan: "#00e5ff",
+  muted: "#555570",
+  text: "#e8e8f0",
+  textDim: "#9090aa",
+};
+</file>
+
+<file path="src/hooks/useToken.js">
+import { useState } from 'react'
+
+export default function useToken() {
+  const [token, setTokenState] = useState(
+    () => localStorage.getItem('sherlocked_token') || ''
+  )
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('sherlocked_user') || 'null')
+    } catch {
+      return null
+    }
+  })
+
+  const setToken = (t, u) => {
+    localStorage.setItem('sherlocked_token', t)
+    localStorage.setItem('sherlocked_user', JSON.stringify(u))
+    setTokenState(t)
+    setUser(u)
+  }
+
+  const logout = () => {
+    localStorage.removeItem('sherlocked_token')
+    localStorage.removeItem('sherlocked_user')
+    setTokenState('')
+    setUser(null)
+  }
+
+  return { token, user, setToken, logout }
+}
+</file>
+
+<file path="src/pages/AboutPage.jsx">
+import { COLORS } from '../constants'
+import { GlitchText, PixelBorder, ArcadeButton } from '../components/ui'
+
+const TEAM = [
+  { role: 'ORGANISER', name: 'NIBBLE COMPUTER SOCIETY' },
+  { role: 'EVENT', name: 'SHERLOCKED 2026' },
+  { role: 'CONTACT', name: 'hackncs.in' },
+]
+
+export default function AboutPage({ setPage }) {
+  return (
+    <div style={{ maxWidth: 720, margin: '0 auto', padding: '40px 24px' }}>
+
+      <div style={{ textAlign: 'center', marginBottom: 48 }}>
+        <GlitchText text="ABOUT" size={20} />
+        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 7, color: COLORS.muted, marginTop: 12, letterSpacing: 2 }}>
+          THE CASE BEHIND THE CASE
+        </p>
+      </div>
+
+      <PixelBorder style={{ padding: '28px 32px', background: COLORS.panel, marginBottom: 24 }}>
+        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: COLORS.accent, marginBottom: 16 }}>
+          WHAT IS SHERLOCKED?
+        </p>
+        <p style={{ fontFamily: 'monospace', fontSize: 14, color: COLORS.text, lineHeight: 1.9 }}>
+          Sherlocked is a detective-themed puzzle challenge hosted by the
+          Nibble Computer Society. Players receive encrypted clues and must
+          decode them to unlock the next challenge. The fastest detective
+          with the most correct answers wins.
+        </p>
+      </PixelBorder>
+
+      <PixelBorder style={{ padding: '28px 32px', background: COLORS.panel, marginBottom: 24 }}>
+        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: COLORS.accent, marginBottom: 20 }}>
+          HOW TO PLAY
+        </p>
+        {[
+          '01. REGISTER OR LOGIN TO YOUR DETECTIVE ACCOUNT',
+          '02. OPEN THE CASE FILES TAB TO VIEW CLUES',
+          '03. DECODE EACH CLUE AND TYPE YOUR ANSWER',
+          '04. HIT LOCK IN — YOUR ANSWER IS SAVED',
+          '05. SCORE IS REVEALED AFTER THE EVENT ENDS',
+        ].map((step) => (
+          <p key={step} style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 7, color: COLORS.textDim, lineHeight: 2.4, letterSpacing: 1 }}>
+            {'>'} {step}
+          </p>
+        ))}
+      </PixelBorder>
+
+      <PixelBorder style={{ padding: '28px 32px', background: COLORS.panel, marginBottom: 40 }}>
+        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: COLORS.accent, marginBottom: 20 }}>
+          EVENT INFO
+        </p>
+        {TEAM.map((t) => (
+          <div key={t.role} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: `1px solid ${COLORS.border}`, padding: '10px 0' }}>
+            <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 7, color: COLORS.muted }}>{t.role}</span>
+            <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 7, color: COLORS.text }}>{t.name}</span>
+          </div>
+        ))}
+      </PixelBorder>
+
+      <div style={{ textAlign: 'center' }}>
+        <ArcadeButton onClick={() => setPage('home')}>
+          BACK TO HOME
+        </ArcadeButton>
+      </div>
+    </div>
+  )
+}
+</file>
+
+<file path="src/pages/AuthPage.jsx">
+import { useState } from "react";
+import { API, COLORS } from "../constants";
+import {
+  Scanline,
+  PixelBorder,
+  GlitchText,
+  ArcadeInput,
+  ArcadeButton,
+  Toast,
+} from "../components/ui";
+
+export default function AuthPage({ setToken, setPage }) {
+  const [mode, setMode] = useState("login");
+  const [name, setName] = useState("");
+  const [zealId, setZealId] = useState("");
+  const [year, setYear] = useState("");
+  const [admissionNumber, setAdmissionNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState(null);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const url =
+        mode === "login" ? `${API}/auth/login` : `${API}/auth/register`;
+      const body =
+        mode === "login"
+          ? { zealId, password }
+          : { name, zealId, year: Number(year), admissionNumber, password };
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || data.error);
+
+      setToken(data.token, data.user);
+      if (data.isGameOver) {
+        setPage("leaderboard");
+      } else {
+        setPage("home");
+      }
+    } catch (e) {
+      setToast({ msg: e.message, type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSubmit();
+  };
+
+  return (
+    <div
+      onKeyDown={handleKeyDown}
+      style={{
+        minHeight: "100vh",
+        background: COLORS.bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 24,
+        position: "relative",
+      }}
+    >
+      <Scanline />
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 560,
+          textAlign: "center",
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        <div style={{ marginBottom: 40 }}>
+          <div style={{ fontSize: 48, marginBottom: 8 }}>🔍</div>
+          <GlitchText text="SHERLOCKED" size={22} />
+          <p
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: 7,
+              color: COLORS.muted,
+              marginTop: 12,
+              letterSpacing: 2,
+            }}
+          >
+            DETECTIVE CHALLENGE v1.0
+          </p>
+        </div>
+
+        <PixelBorder style={{ padding: "48px 56px", background: COLORS.panel }}>
+          <div
+            style={{
+              display: "flex",
+              marginBottom: 28,
+              border: `1px solid ${COLORS.border}`,
+            }}
+          >
+            {["login", "register"].map((m) => (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                style={{
+                  flex: 1,
+                  padding: "10px 0",
+                  background: mode === m ? COLORS.accent : "transparent",
+                  color: mode === m ? "#000" : COLORS.muted,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "'Press Start 2P', monospace",
+                  fontSize: 8,
+                  letterSpacing: 1,
+                  transition: "all 0.12s",
+                }}
+              >
+                {m.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          {mode === "register" && (
+            <>
+              <ArcadeInput
+                label="DETECTIVE NAME"
+                value={name}
+                onChange={setName}
+                placeholder="Enter your alias"
+              />
+              <ArcadeInput
+                label="YEAR"
+                type="number"
+                value={year}
+                onChange={setYear}
+                placeholder="e.g. 1"
+              />
+              <ArcadeInput
+                label="ADMISSION NO."
+                value={admissionNumber}
+                onChange={setAdmissionNumber}
+                placeholder="e.g. 25XXXX"
+              />
+            </>
+          )}
+          <ArcadeInput
+            label="ZEAL ID"
+            value={zealId}
+            onChange={setZealId}
+            placeholder="e.g. ZL-1234"
+          />
+          <ArcadeInput
+            label="PASSWORD"
+            type="password"
+            value={password}
+            onChange={setPassword}
+            placeholder="••••••••"
+          />
+
+          <div style={{ marginTop: 8 }}>
+            <ArcadeButton fullWidth loading={loading} onClick={handleSubmit}>
+              {mode === "login" ? "ENTER CASE ROOM" : "JOIN THE CASE"}
+            </ArcadeButton>
+          </div>
+        </PixelBorder>
+      </div>
+      {toast && (
+        <Toast
+          message={toast.msg}
+          type={toast.type}
+          onDone={() => setToast(null)}
+        />
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/pages/CluesPage.jsx">
+import { useState, useEffect } from "react";
+import { API, COLORS } from "../constants";
+import { PixelBorder, GlitchText, ArcadeButton, Toast } from "../components/ui";
+
+export default function CluesPage({ token }) {
+  const [clues, setClues] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [answers, setAnswers] = useState({});
+  const [submitting, setSubmitting] = useState({});
+  const [submitted, setSubmitted] = useState({});
+  const [toast, setToast] = useState(null);
+  const [active, setActive] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API}/game/clues`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success) {
+          setClues(d.clues);
+          if (d.clues.length) setActive(d.clues[0].id);
+
+          const prevAnswers = {};
+          const prevSubmitted = {};
+
+          if (d.submissions && d.submissions.length > 0) {
+            d.submissions.forEach((sub) => {
+              prevAnswers[sub.questionId] = sub.answer;
+              prevSubmitted[sub.questionId] = true;
+            });
+          }
+
+          setAnswers(prevAnswers);
+          setSubmitted(prevSubmitted);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [token]);
+
+  const handleSubmit = async (id) => {
+    if (!answers[id]?.trim()) return;
+    setSubmitting((s) => ({ ...s, [id]: true }));
+    try {
+      const res = await fetch(`${API}/game/submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ questionId: id, answer: answers[id].trim() }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      setSubmitted((s) => ({ ...s, [id]: true }));
+      setToast({ msg: `Clue ${id} locked in!`, type: "success" });
+
+      // Auto-advance logic
+      const currentIndex = clues.findIndex((c) => c.id === id);
+      if (currentIndex !== -1 && currentIndex < clues.length - 1) {
+        setActive(clues[currentIndex + 1].id);
+      }
+    } catch (e) {
+      setToast({ msg: e.message, type: "error" });
+    } finally {
+      setSubmitting((s) => ({ ...s, [id]: false }));
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: "center", padding: 80 }}>
+        <p
+          style={{
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: 10,
+            color: COLORS.accent,
+          }}
+        >
+          LOADING CASE FILES...
+        </p>
+      </div>
+    );
+  }
+
+  const activeClue = clues.find((c) => c.id === active);
+
+  return (
+    <div style={{ width: "100%", padding: "24px 48px" }}>
+      {/* Header */}
+      <div
+        style={{
+          marginBottom: 32,
+          display: "flex",
+          alignItems: "center",
+          gap: 16,
+        }}
+      >
+        <span style={{ fontSize: 28 }}>📁</span>
+        <div>
+          <GlitchText text="CASE FILES" size={16} />
+          <p
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: 7,
+              color: COLORS.muted,
+              marginTop: 6,
+              letterSpacing: 1,
+            }}
+          >
+            {clues.length} EVIDENCE ITEMS FOUND
+          </p>
+        </div>
+      </div>
+
+      {/* Clue tabs */}
+      <div
+        style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}
+      >
+        {clues.map((c) => (
+          <button
+            key={c.id}
+            onClick={() => setActive(c.id)}
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: 8,
+              padding: "10px 18px",
+              background: active === c.id ? COLORS.accent : "transparent",
+              color:
+                active === c.id
+                  ? "#000"
+                  : submitted[c.id]
+                    ? COLORS.green
+                    : COLORS.textDim,
+              border: `1px solid ${
+                active === c.id
+                  ? COLORS.accent
+                  : submitted[c.id]
+                    ? COLORS.green
+                    : COLORS.border
+              }`,
+              cursor: "pointer",
+              transition: "all 0.12s",
+              position: "relative",
+            }}
+          >
+            {submitted[c.id] && active !== c.id && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: -6,
+                  right: -6,
+                  fontSize: 10,
+                }}
+              >
+                ✓
+              </span>
+            )}
+            CLUE #{c.id}
+          </button>
+        ))}
+      </div>
+
+      {/* Active clue panel */}
+      {activeClue && (
+        <PixelBorder
+          style={{ padding: 32, background: COLORS.panel }}
+          color={submitted[activeClue.id] ? COLORS.green : COLORS.accent}
+        >
+          {/* Badges */}
+          <div
+            style={{
+              marginBottom: 20,
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <div
+              style={{
+                background: COLORS.accent,
+                color: "#000",
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: 9,
+                padding: "6px 12px",
+              }}
+            >
+              EVIDENCE #{activeClue.id}
+            </div>
+            {submitted[activeClue.id] && (
+              <div
+                style={{
+                  background: "#0a2a0a",
+                  color: COLORS.green,
+                  fontFamily: "'Press Start 2P', monospace",
+                  fontSize: 8,
+                  padding: "6px 12px",
+                  border: `1px solid ${COLORS.green}`,
+                }}
+              >
+                SUBMITTED
+              </div>
+            )}
+          </div>
+
+          {/* Clue text */}
+          <div
+            style={{
+              background: "#0d0d16",
+              border: `1px solid ${COLORS.border}`,
+              padding: "20px 24px",
+              marginBottom: 24,
+              fontFamily: "monospace",
+              fontSize: 14,
+              color: COLORS.text,
+              lineHeight: 1.8,
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 2,
+                background: COLORS.accent,
+              }}
+            />
+            <span style={{ color: COLORS.accentDim, marginRight: 8 }}>
+              {">"}
+            </span>
+            {activeClue.text}
+          </div>
+
+          {/* Answer row */}
+          <div style={{ marginBottom: 16 }}>
+            <label
+              style={{
+                display: "block",
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: 8,
+                color: COLORS.accentDim,
+                marginBottom: 8,
+                letterSpacing: 1,
+              }}
+            >
+              YOUR DEDUCTION:
+            </label>
+            <div style={{ display: "flex", gap: 8 }}>
+              <input
+                value={answers[activeClue.id] || ""}
+                onChange={(e) =>
+                  setAnswers((a) => ({ ...a, [activeClue.id]: e.target.value }))
+                }
+                onKeyDown={(e) =>
+                  e.key === "Enter" && handleSubmit(activeClue.id)
+                }
+                placeholder="Type your answer..."
+                style={{
+                  flex: 1,
+                  background: "#0d0d16",
+                  border: `1px solid ${COLORS.border}`,
+                  color: COLORS.text,
+                  fontFamily: "monospace",
+                  fontSize: 14,
+                  padding: "12px 16px",
+                  outline: "none",
+                }}
+              />
+              <ArcadeButton
+                onClick={() => handleSubmit(activeClue.id)}
+                loading={submitting[activeClue.id]}
+                variant={submitted[activeClue.id] ? "success" : "primary"}
+              >
+                {submitted[activeClue.id] ? "UPDATE" : "LOCK IN"}
+              </ArcadeButton>
+            </div>
+          </div>
+
+          <p
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: 7,
+              color: COLORS.muted,
+              letterSpacing: 1,
+            }}
+          >
+            PRESS ENTER OR CLICK LOCK IN TO SUBMIT
+          </p>
+        </PixelBorder>
+      )}
+
+      {toast && (
+        <Toast
+          message={toast.msg}
+          type={toast.type}
+          onDone={() => setToast(null)}
+        />
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/pages/HomePage.jsx">
+import { useState, useEffect } from "react";
+import { API, COLORS } from "../constants";
+import { GlitchText, ArcadeButton } from "../components/ui";
+
+export default function HomePage({ setPage }) {
+  const [isGameOver, setIsGameOver] = useState(false);
+
+  // Ping the backend on load to see if the game has been locked
+  useEffect(() => {
+    fetch(`${API}/game/leaderboard`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setIsGameOver(data.isGameOver);
+        }
+      })
+      .catch((err) => console.error("Failed to fetch game state:", err));
+  }, []);
+
+  return (
+    <div
+      style={{
+        minHeight: "calc(100vh - 56px)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "40px 24px",
+        textAlign: "center",
+      }}
+    >
+      <div style={{ fontSize: 64, marginBottom: 16 }}>🔍</div>
+
+      <GlitchText text="SHERLOCKED" size={28} />
+
+      <p
+        style={{
+          fontFamily: "'Press Start 2P', monospace",
+          fontSize: 9,
+          color: COLORS.muted,
+          marginTop: 16,
+          marginBottom: 40,
+          letterSpacing: 2,
+          lineHeight: 2,
+        }}
+      >
+        THE DETECTIVE CHALLENGE BY NCS
+        <br />
+        FIND THE SOLUTION. UNLOCK THE NEXT CLUE.
+      </p>
+
+      <div
+        style={{
+          display: "flex",
+          gap: 16,
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
+      >
+        <ArcadeButton
+          onClick={() => setPage(isGameOver ? "leaderboard" : "clues")}
+        >
+          {isGameOver ? "CHECK LEADERBOARD!" : "START INVESTIGATION"}
+        </ArcadeButton>
+
+        <ArcadeButton onClick={() => setPage("about")} variant="secondary">
+          ABOUT THE EVENT
+        </ArcadeButton>
+      </div>
+
+      {/* Event details card */}
+      <div
+        style={{
+          marginTop: 60,
+          border: `1px solid ${COLORS.border}`,
+          padding: "24px 40px",
+          background: COLORS.panel,
+          display: "flex",
+          gap: 48,
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
+      >
+        {[
+          { label: "DATE", value: "TO BE REVEALED" },
+          { label: "TIME", value: "TO BE REVEALED" },
+          { label: "VENUE", value: "TO BE REVEALED" },
+        ].map((item) => (
+          <div key={item.label} style={{ textAlign: "center" }}>
+            <p
+              style={{
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: 7,
+                color: COLORS.muted,
+                marginBottom: 8,
+              }}
+            >
+              {item.label}
+            </p>
+            <p
+              style={{
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: 10,
+                color: COLORS.accent,
+              }}
+            >
+              {item.value}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/pages/LeaderboardPage.jsx">
+import { useState, useEffect } from "react";
+import { API, COLORS } from "../constants";
+import { PixelBorder, GlitchText } from "../components/ui";
+
+const MEDALS = ["🥇", "🥈", "🥉"];
+
+const DEFAULT_SCORES = [
+  {
+    rank: 1,
+    name: "???",
+    year: "?",
+    admissionNumber: "?????",
+    score: "?/3",
+    time: "??:??",
+    status: "locked",
+  },
+  {
+    rank: 2,
+    name: "???",
+    year: "?",
+    admissionNumber: "?????",
+    score: "?/3",
+    time: "??:??",
+    status: "locked",
+  },
+  {
+    rank: 3,
+    name: "???",
+    year: "?",
+    admissionNumber: "?????",
+    score: "?/3",
+    time: "??:??",
+    status: "locked",
+  },
+];
+
+export default function LeaderboardPage() {
+  const [scores, setScores] = useState(DEFAULT_SCORES);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [blink, setBlink] = useState(true);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const t = setInterval(() => setBlink((b) => !b), 600);
+    return () => clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    fetch(`${API}/game/leaderboard`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success && d.isGameOver) {
+          setIsGameOver(true);
+          setScores(d.leaderboard);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  return (
+    <div style={{ maxWidth: 850, margin: "0 auto", padding: 24 }}>
+      <div style={{ textAlign: "center", marginBottom: 40 }}>
+        <div style={{ fontSize: 40, marginBottom: 12 }}>🏆</div>
+        <GlitchText text="LEADERBOARD" size={18} />
+      </div>
+
+      <PixelBorder style={{ background: COLORS.panel, overflow: "hidden" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "60px 1fr 60px 100px 80px 120px",
+            background: "#0a0a12",
+            borderBottom: `2px solid ${COLORS.accent}`,
+            padding: "12px 20px",
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: 8,
+            color: COLORS.accentDim,
+            letterSpacing: 1,
+          }}
+        >
+          <span>RANK</span>
+          <span>DETECTIVE</span>
+          <span>YEAR</span>
+          <span>ADMN NO.</span>
+          <span>SCORE</span>
+          <span>LAST SOLVE</span>
+        </div>
+
+        {loading ? (
+          <div
+            style={{
+              padding: 24,
+              textAlign: "center",
+              fontFamily: "monospace",
+              color: COLORS.muted,
+            }}
+          >
+            Loading Data...
+          </div>
+        ) : (
+          scores.map((s, i) => (
+            <div
+              key={s.rank || i}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "60px 1fr 60px 100px 80px 120px",
+                padding: "18px 20px",
+                borderBottom:
+                  i < scores.length - 1 ? `1px solid ${COLORS.border}` : "none",
+                background: i === 0 && isGameOver ? "#1a1200" : "transparent",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "'Press Start 2P', monospace",
+                  fontSize: 14,
+                }}
+              >
+                {isGameOver && MEDALS[i] ? MEDALS[i] : s.rank}
+              </span>
+              <span
+                style={{
+                  fontFamily: "'Press Start 2P', monospace",
+                  fontSize: 9,
+                  color: i === 0 && isGameOver ? COLORS.accent : COLORS.text,
+                }}
+              >
+                {!isGameOver ? (
+                  <span style={{ color: COLORS.muted }}>{"????.?????"}</span>
+                ) : (
+                  s.name
+                )}
+              </span>
+              <span style={{ fontFamily: "monospace", fontSize: 10 }}>
+                {s.year || "?"}
+              </span>
+              <span style={{ fontFamily: "monospace", fontSize: 10 }}>
+                {s.admissionNumber || "?????"}
+              </span>
+              <span
+                style={{
+                  fontFamily: "'Press Start 2P', monospace",
+                  fontSize: 10,
+                  color: s.score.includes("3/") ? COLORS.green : COLORS.text,
+                }}
+              >
+                {s.score}
+              </span>
+              <span
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: 11,
+                  color: COLORS.textDim,
+                }}
+              >
+                {s.time}
+              </span>
+            </div>
+          ))
+        )}
+      </PixelBorder>
+
+      {!isGameOver && (
+        <div style={{ textAlign: "center", marginTop: 32 }}>
+          <p
+            style={{
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: 8,
+              color: blink ? COLORS.cyan : "transparent",
+              letterSpacing: 2,
+            }}
+          >
+            RESULTS RELEASED AFTER EVENT ENDS
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/App.jsx">
+import { useState, useEffect } from "react";
+import { API, COLORS } from "./constants"; // Added API here
+import useToken from "./hooks/useToken";
+import { Scanline } from "./components/ui";
+import Navbar from "./components/Navbar";
+import AuthPage from "./pages/AuthPage";
+import CluesPage from "./pages/CluesPage";
+import LeaderboardPage from "./pages/LeaderboardPage";
+import AboutPage from "./pages/AboutPage";
+import HomePage from "./pages/HomePage";
+
+export default function App() {
+  const { token, user, setToken, logout } = useToken();
+  const [page, setPage] = useState("home");
+
+  useEffect(() => {
+    if (token) {
+      fetch(`${API}/game/leaderboard`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.isGameOver) {
+            setPage("leaderboard");
+          }
+        })
+        .catch((err) => console.error("Failed to check game state:", err));
+    }
+  }, [token]);
+
+  if (!token) {
+    return <AuthPage setToken={setToken} setPage={setPage} />;
+  }
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: COLORS.bg,
+        color: COLORS.text,
+        position: "relative",
+      }}
+    >
+      <Scanline />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <Navbar page={page} setPage={setPage} user={user} logout={logout} />
+        <main style={{ padding: "30px 40px" }}>
+          {page === "home" && <HomePage setPage={setPage} />}
+          {page === "clues" && <CluesPage token={token} />}
+          {page === "leaderboard" && <LeaderboardPage />}
+          {page === "about" && <AboutPage setPage={setPage} />}
+        </main>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/index.css">
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0a0a0f;
+  color: #e8e8f0;
+  font-family: monospace;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+input, button {
+  font-family: inherit;
+}
+
+p {
+  margin: 0;
+}
+</file>
+
+<file path="src/main.jsx">
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+</file>
+
+<file path=".gitignore">
+node_modules
+.env
+DS_Store
+</file>
+
+<file path="eslint.config.js">
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+
+export default [
+  { ignores: ['dist'] },
+  {
+    files: ['**/*.{js,jsx}'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+    },
+  },
+]
+</file>
+
+<file path="index.html">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Sherlocked</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+</file>
+
+<file path="package.json">
+{
+  "name": "sherlocked-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^9.9.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "globals": "^15.9.0",
+    "vite": "^5.4.1"
+  }
+}
+</file>
+
+<file path="vercel.json">
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+</file>
+
+<file path="vite.config.js">
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 3000,
+    open: true,
+  },
+})
+</file>
+
+</files>

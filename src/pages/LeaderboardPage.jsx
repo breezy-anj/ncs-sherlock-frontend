@@ -10,7 +10,7 @@ const DEFAULT_SCORES = [
     name: "???",
     year: "?",
     admissionNumber: "?????",
-    score: "?/3",
+    score: "?/8",
     time: "??:??",
     status: "locked",
   },
@@ -19,7 +19,7 @@ const DEFAULT_SCORES = [
     name: "???",
     year: "?",
     admissionNumber: "?????",
-    score: "?/3",
+    score: "?/8",
     time: "??:??",
     status: "locked",
   },
@@ -28,7 +28,7 @@ const DEFAULT_SCORES = [
     name: "???",
     year: "?",
     admissionNumber: "?????",
-    score: "?/3",
+    score: "?/8",
     time: "??:??",
     status: "locked",
   },
@@ -142,7 +142,7 @@ export default function LeaderboardPage() {
                 style={{
                   fontFamily: "'Press Start 2P', monospace",
                   fontSize: 10,
-                  color: s.score.includes("3/") ? COLORS.green : COLORS.text,
+                  color: s.score === "8/8" ? COLORS.green : COLORS.text,
                 }}
               >
                 {s.score}
